@@ -1,24 +1,21 @@
-var kater,katerKlein,landschap,kever;
-var keverX;
-var keverY;
+var startscreen;
+var song;
 
 function preload() {
-  kater = loadImage("images/brieck.jpg");
-  bomen = loadImage("images/bomen.jpg");
-  kever = loadImage("images/sprites/kever.png");
+  song = loadSound('sounds/background/diekaplyn.mp3');
+}
+
+function preload() {
+  startscreen = loadImage("images/backgrounds/ZuidAfrika1png.png");
 }
 
 function setup() {
-  canvas = createCanvas(450,450);
+  canvas = createCanvas(1920,1080);
   canvas.parent('processing');
-  keverX = 150;
-  keverY = 100;
-}
+  song.play();
 
-function draw() {
-  background('grey');  
-  image(kater,25,25,400,400);
-  keverX+=random(-5,5);
-  keverY+=random(-5,5);
-  image(kever,keverX,keverY,30,30);
-}
+  }
+
+  function draw() {
+  background(startscreen); 
+  }
