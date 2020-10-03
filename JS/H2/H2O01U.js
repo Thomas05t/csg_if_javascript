@@ -13,7 +13,6 @@ function setup() {
   canvas = createCanvas(1920,1080);
   canvas.parent('processing');
   song.play();
-
   }
 
   function draw() {
