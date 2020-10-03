@@ -1,5 +1,7 @@
 var startscreen;
 var song;
+var slider; 
+
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
 function preload() {
@@ -11,18 +13,10 @@ function setup() {
 canvas = createCanvas(1920,1080);
 canvas.parent('processing');
 song.play();
+slider = createSlider(0, 1, 0.5, 0.1);
 }
 
 function draw() {
 background(startscreen); 
+song.setVolume(slider.value()); 
 }
-
-<<<<<<< HEAD
-=======
-  function draw() {
-  background(startscreen); 
-  }
-  
-  vvuvugvuy
->>>>>>> 7816c561fc406d1e142ce1f73902df0663567397
-  

@@ -1,21 +1,24 @@
+var startscreen;
+var song;
+var slider; 
+
+laadJavascriptFile('JS/P5/addons/p5.sound.js');
+
+function preload() {
+song = loadSound('sounds/background/diekaplyn.mp3');
+startscreen = loadImage("images/backgrounds/ZuidAfrika1png.png");
+}
+
 function setup() {
-  canvas = createCanvas(1000,500);
-  background('orange');
-  canvas.parent('processing');
-  noLoop();
+canvas = createCanvas(1920,1080);
+canvas.parent('processing');
+song.play();
+slider = createSlider(0, 1, 0.5, 0.1);
+slider.position(800, 400);
+slider.style('width', '160px');
 }
 
 function draw() {
-  // groene cirkel zonder rand
-  
-  noStroke();
-  fill('green');
-  ellipse(300,200,400);
-  
-  // witte rechthoek met rode rand
-  
-  stroke('red');
-  fill('white');
-  strokeWeight(10);
-  rect(650,100,250,300);  
+background(startscreen); 
+song.setVolume(slider.value()); 
 }
