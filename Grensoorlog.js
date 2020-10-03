@@ -17,4 +17,12 @@ function draw() {
 background(startscreen); 
 }
 
+<<<<<<< HEAD
+=======
+  function draw() {
+  background(startscreen); 
+  }
+  
+  vvuvugvuy
+>>>>>>> 7816c561fc406d1e142ce1f73902df0663567397
   
