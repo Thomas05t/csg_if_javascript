@@ -12,7 +12,7 @@ var timer = 0.5;
 var delay = 0.4;
 var r4;
 var bullet;
-var health =5;
+var health = 5;
 var time;
 var mflash;
 
@@ -25,7 +25,9 @@ function preload() {
     vid = createVideo('intro.mp4');
     scope = loadImage("scope.png")
     shot = loadSound('gunshot.mp3')
+    mflash = loadImage("mflash.png")
     reload = loadSound('gunreload.mp3')
+
 
 }
 
