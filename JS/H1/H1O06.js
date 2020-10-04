@@ -29,7 +29,7 @@ function setup() {
 function draw() {
     background(gamescreen);
     textSize(45);
-    text("aantal koeëls:" + bullet, 1500, 900);
+    text("aantal koeëls:" + bullet, 1540, 920);
     image(r4, 1500, 920, r4.width / 2, r4.height / 2);
     if (timer > 0) {
         timer -= (deltaTime / 1000);
