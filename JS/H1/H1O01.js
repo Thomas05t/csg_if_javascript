@@ -4,7 +4,7 @@ var slider;
 var isInGame = false
 var gamescreen;
 var vid; 
-var gun;
+var scope;
 var vidIsPlaying = false
 
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
@@ -14,6 +14,7 @@ function preload() {
     startscreen = loadImage("images/backgrounds/ZuidAfrika1png.png");
     gamescreen= loadImage("images/backgrounds/ddd.png");
     vid = createVideo('intro.mp4');
+    scope = loadImage("scope.png")
 
 }
 
@@ -34,13 +35,14 @@ function draw() {
     song.setVolume(slider.value());
 
 
-    if (isInGame) {
+    if  (isInGame ) { 
         background(150);
         vid.play();
         vid.size(1920, 1080);
         image(vid, 0, 0);
         vid.noLoop();
-        sampleIsPlaying = false;
+        vidIsPlaying = false;
+        
         } 
         else {
         background(startscreen);
@@ -60,3 +62,10 @@ function draw() {
 //if (isInGame) {
         //background(gamescreen)
 
+/*if  (isInGame && vidIsPlaying == true) { 
+        background(150);
+        vid.play();
+        vid.size(1920, 1080);
+        image(vid, 0, 0);
+        vid.noLoop();
+        vidIsPlaying = false;} */

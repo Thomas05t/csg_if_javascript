@@ -1,33 +1,19 @@
-function setup() {
-  canvas = createCanvas(900,200);
-  background('lavender');
-  canvas.parent('processing');
-  noLoop();
+var scope;
+var gamescreen;
+
+function preload() {
+    scope = loadImage("scope.png")
+    gamescreen= loadImage("images/backgrounds/ddd.png");
 }
 
-function draw() {
-  noStroke();
-  fill('mediumaquamarine');
-  translate(50,50);
-  rect(0,0,100,100);
+function setup() { 
   
-  translate(140,0);
-  rect(0,0,100,100);
-  translate(140,0);
-  rect(0,0,100,100);
-  
-  translate(140,0);
-  // BEGIN aanpassing
-  
-  stroke('cornsilk');
-  strokeWeight(20);
-  fill('teal');
-  translate(0,40);  
-  rect(0,0,100,100);  
-  // EINDE aanpassing
-  
-  translate(140,0);
-  rect(0,0,100,100);
-  translate(140,0);
-  rect(0,0,100,100);  
-}
+    createCanvas(1920, 1080); 
+} 
+   
+function draw() { 
+    background(gamescreen); 
+    image(scope,mouseX-250,mouseY-250,500,500);
+
+
+} 
