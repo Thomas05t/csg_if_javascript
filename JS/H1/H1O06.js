@@ -3,7 +3,7 @@ var gamescreen;
 var shot;
 var reload;
 var timer = 0.5;
-var delay = 0.5;
+var delay = 0.4;
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
 function preload() {
