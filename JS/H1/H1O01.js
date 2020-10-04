@@ -14,6 +14,7 @@ var r4;
 var bullet;
 var health =5;
 var time;
+var mflash;
 
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 

@@ -8,6 +8,8 @@ var r4;
 var bullet = 30;
 var health =5;
 var time;
+var mflash;
+
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
 function preload() {
@@ -16,6 +18,7 @@ function preload() {
     shot = loadSound('gunshot.mp3');
     reload = loadSound('gunreload.mp3');
     r4 = loadImage("r4.png");
+    mflash = loadImage("mflash.png")
 }
 
 function setup() {
@@ -41,6 +44,7 @@ function draw() {
             timer = delay;
             shot.play();
             bullet--;
+            image(mflash,mouseX+30 - 250, mouseY-10 - 250, 500, 500);
         }
     }
 
