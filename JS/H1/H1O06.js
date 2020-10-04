@@ -27,7 +27,7 @@ function draw() {
     }
     image(scope, mouseX - 250, mouseY - 250, 500, 500);
     if (mouseIsPressed) {
-        
+
         if (timer <= 0) {
             timer = delay;
             shot.play();
