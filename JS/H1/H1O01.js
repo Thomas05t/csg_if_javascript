@@ -6,6 +6,8 @@ var gamescreen;
 var vid; 
 var scope;
 var vidIsPlaying = false
+var shot;
+var reload;
 
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
