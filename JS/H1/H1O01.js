@@ -9,7 +9,9 @@ var vidIsPlaying = false
 var shot;
 var reload;
 var timer = 0.5;
-var delay = 0.5;
+var delay = 0.4;
+var r4;
+var bullet;
 
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 

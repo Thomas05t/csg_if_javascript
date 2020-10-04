@@ -4,13 +4,16 @@ var shot;
 var reload;
 var timer = 0.5;
 var delay = 0.4;
+var r4;
+var bullet = 30;
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
 function preload() {
-    scope = loadImage("scope.png")
+    scope = loadImage("scope.png");
     gamescreen = loadImage("images/backgrounds/ddd.png");
-    shot = loadSound('gunshot.mp3')
-    reload = loadSound('gunreload.mp3')
+    shot = loadSound('gunshot.mp3');
+    reload = loadSound('gunreload.mp3');
+    r4 = loadImage("r4.png");
 }
 
 function setup() {
@@ -18,10 +21,14 @@ function setup() {
 
 
     createCanvas(1920, 1080);
+
 }
 
 function draw() {
     background(gamescreen);
+    textSize(45);
+    text("aantal koeëls:" + bullet, 1500, 900);
+    image(r4, 1500, 920, r4.width / 2, r4.height / 2);
     if (timer > 0) {
         timer -= (deltaTime / 1000);
     }
@@ -31,6 +38,7 @@ function draw() {
         if (timer <= 0) {
             timer = delay;
             shot.play();
+            bullet--;
         }
     }
 
