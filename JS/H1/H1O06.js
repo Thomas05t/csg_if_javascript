@@ -6,7 +6,7 @@ var timer = 0.5;
 var delay = 0.4;
 var r4;
 var bullet = 30;
-var health =5;
+var health = 5;
 var time;
 var mflash;
 
@@ -19,6 +19,8 @@ function preload() {
     reload = loadSound('gunreload.mp3');
     r4 = loadImage("r4.png");
     mflash = loadImage("mflash.png")
+    reload = loadSound('gunreload.mp3');
+
 }
 
 function setup() {
@@ -44,11 +46,17 @@ function draw() {
             timer = delay;
             shot.play();
             bullet--;
-            image(mflash,mouseX+30 - 250, mouseY-10 - 250, 500, 500);
+            image(mflash, mouseX + 30 - 250, mouseY - 10 - 250, 500, 500);
+            if (bullet == 0) { reload.play(); 
+            bullet=30; }
+
         }
+
     }
 
 
 }
+
+
 
 
