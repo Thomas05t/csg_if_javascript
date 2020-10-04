@@ -1,5 +1,6 @@
 var kleur = 'indianred';
 var afstand;
+var gun;
 
 function setup() {
   canvas = createCanvas(450,450);
@@ -8,10 +9,11 @@ function setup() {
   textSize(14);
   noStroke();
   frameRate(50);
+  gun
 }
 
 function draw() {
-  background('lavender');
+  background('white');
   fill('black');  
   
   mouseX=constrain(mouseX,25,width - 25);

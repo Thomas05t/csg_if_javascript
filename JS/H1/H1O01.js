@@ -3,7 +3,9 @@ var song;
 var slider;
 var isInGame = false
 var gamescreen;
-var vid;
+var vid; 
+var gun;
+var vidIsPlaying = false
 
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
@@ -23,8 +25,7 @@ function setup() {
     slider.position(800, 400);
     slider.style('width', '160px');
     
-    vid.play();
-    vid.size(1920, 1080);
+    
 
 }
 
@@ -34,10 +35,14 @@ function draw() {
 
 
     if (isInGame) {
-        background(gamescreen)
-        
-        
-    } else {
+        background(150);
+        vid.play();
+        vid.size(1920, 1080);
+        image(vid, 0, 0);
+        vid.noLoop();
+        sampleIsPlaying = false;
+        } 
+        else {
         background(startscreen);
         textSize(60);
         textFont('Georgia');
@@ -51,4 +56,7 @@ function draw() {
         }
     }
 }
+
+//if (isInGame) {
+        //background(gamescreen)
 
