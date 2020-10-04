@@ -6,6 +6,8 @@ var timer = 0.5;
 var delay = 0.4;
 var r4;
 var bullet = 30;
+var health =5;
+var time;
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
 function preload() {

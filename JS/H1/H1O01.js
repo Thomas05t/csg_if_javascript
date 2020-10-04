@@ -12,6 +12,8 @@ var timer = 0.5;
 var delay = 0.4;
 var r4;
 var bullet;
+var health =5;
+var time;
 
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
@@ -95,3 +97,5 @@ function draw() {
 
 
 }*/
+
+//papa idee: bloed spletter, hart en hoofd raken, punten systeem
