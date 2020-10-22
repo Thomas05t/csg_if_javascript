@@ -10,7 +10,7 @@ var health = 5;
 var time;
 var mflash;
 var enemyImages = [];
-var enemies = []; 
+var enemies = [];
 
 laadJavascriptFile('JS/P5/addons/p5.sound.js');
 
@@ -30,17 +30,27 @@ function preload() {
 }
 
 class Enemy {
-  constructor(x, y, imgsRef) {
-    this.x = x;
-    this.y = y;
-    this.height =100;
-    this.width =100;
-    this.sprite = imgsRef[random(0, imgsRef.length - 1)]    
-  }
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        var index = int(random(0, enemyImages.length));
+        this.sprite = enemyImages[index]
+        this.width = this.sprite.width / 2;
+        this.height = this.sprite.height / 2;
+    }
 
-  teken() {
-      image(this.sprite, this.x, this.y, this.width, this.height);
-  }
+    teken() {
+        rectMode(CENTER);
+        image(this.sprite, this.x, this.y, this.width, this.height);
+    }
+
+    valMisschienDood(x, y) {
+        if (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height)
+        {
+            return true;
+        } 
+        return false;
+    }
 }
 
 
@@ -48,7 +58,9 @@ function setup() {
     frameRate(60);
     createCanvas(1920, 1080);
 
-    //enemies.push(new Enemy(200, 200, enemyImages));
+    for (var i = 0; i < 2; i++) {
+        enemies.push(new Enemy(random(0, width), random(0, height)));
+    }
 }
 
 function draw() {
@@ -63,13 +75,22 @@ function draw() {
     if (mouseIsPressed) {
 
         if (timer <= 0 && !reload.isPlaying()) {
+            // Shiet de kogel
             timer = delay;
             shot.play();
             bullet--;
             image(mflash, mouseX + 30 - 250, mouseY - 10 - 250, 500, 500);
-            if (bullet == 0) { reload.play(); 
-            bullet=30; }
-
+            if (bullet == 0) {
+                reload.play();
+                bullet = 30;
+            }
+            for (var i = enemies.length-1; i > 0; i--)
+            {
+                if (enemies[i].valMisschienDood(mouseX, mouseY))
+                {
+                    enemies.splice(i, 1);
+                }
+            }
         }
 
     }
