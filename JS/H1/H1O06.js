@@ -84,7 +84,7 @@ function draw() {
                 reload.play();
                 bullet = 30;
             }
-            for (var i = enemies.length-1; i > 0; i--)
+            for (var i = enemies.length-1; i >= 0; i--)
             {
                 if (enemies[i].valMisschienDood(mouseX, mouseY))
                 {
