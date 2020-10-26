@@ -45,10 +45,9 @@ class Enemy {
     }
 
     valMisschienDood(x, y) {
-        if (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height)
-        {
+        if (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) {
             return true;
-        } 
+        }
         return false;
     }
 }
@@ -58,7 +57,11 @@ function setup() {
     frameRate(60);
     createCanvas(1920, 1080);
 
-    for (var i = 0; i < 2; i++) {
+    spawn_vijand(2)
+}
+
+function spawn_vijand(aantal) {
+    for (var i = 0; i < aantal; i++) {
         enemies.push(new Enemy(random(0, width), random(0, height)));
     }
 }
@@ -84,11 +87,10 @@ function draw() {
                 reload.play();
                 bullet = 30;
             }
-            for (var i = enemies.length-1; i >= 0; i--)
-            {
-                if (enemies[i].valMisschienDood(mouseX, mouseY))
-                {
+            for (var i = enemies.length - 1; i >= 0; i--) {
+                if (enemies[i].valMisschienDood(mouseX, mouseY)) {
                     enemies.splice(i, 1);
+                    spawn_vijand(1)
                 }
             }
         }
