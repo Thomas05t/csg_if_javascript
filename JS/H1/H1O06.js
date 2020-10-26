@@ -97,9 +97,8 @@ function draw() {
     enemies.forEach(enemy => {
         enemy.teken()
     })
-    tint(0)
-    text("aantal koeëls:" + bullet, width - 400, height - 100);
-    image(r4, width - r4.width / 2 - 100, height - r4.height / 2 - 100, r4.width / 2, r4.height / 2);
+    text("aantal koeëls:" + bullet, width - 420, height - 200);
+    image(r4, width - r4.width / 2 - 100, height - r4.height / 2 - 50, r4.width / 2, r4.height / 2);
     if (timer > 0) {
         timer -= (deltaTime / 1000);
     }
