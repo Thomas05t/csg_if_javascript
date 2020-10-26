@@ -30,7 +30,7 @@ function preload() {
 }
 
 class Enemy {
-    constructor(x, y) {
+    constructor() {
         this.x = x;
         this.y = y;
         var index = int(random(0, enemyImages.length));
@@ -62,7 +62,10 @@ function setup() {
 
 function spawn_vijand(aantal) {
     for (var i = 0; i < aantal; i++) {
-        enemies.push(new Enemy(random(0, width), random(0, height)));
+        var vijand = new Enemy();
+        vijand.x = random(Enemy.width, width - Enemy.width)
+        vijand.y = random(Enemy.height, height - Enemy.height)
+        enemies.push(vijand);
     }
 }
 
