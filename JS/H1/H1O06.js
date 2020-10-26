@@ -31,57 +31,50 @@ function preload() {
 
 class Enemy {
     constructor() {
-        this.x = x;
-        this.y = y;
         var index = int(random(0, enemyImages.length));
         this.sprite = enemyImages[index]
         this.width = this.sprite.width / 2;
         this.height = this.sprite.height / 2;
+        this.x = random(0, width - this.width);
+        this.y = random(0, height - this.height);
+        this.isDood = false
     }
 
     teken() {
-        rectMode(CENTER);
         image(this.sprite, this.x, this.y, this.width, this.height);
     }
 
     valMisschienDood(x, y) {
         if (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) {
-            return true;
+            this.isDood = true;
+            return
         }
-        return false;
+        this.isDood = false;
     }
 }
 
 
 function setup() {
     frameRate(60);
-    createCanvas(1920, 1080);
+    createCanvas(windowWidth, windowHeight);
 
     spawn_vijand(2)
 }
 
 function spawn_vijand(aantal) {
     for (var i = 0; i < aantal; i++) {
-        var vijand = new Enemy();
-        vijand.x = random(Enemy.width, width - Enemy.width)
-        vijand.y = random(Enemy.height, height - Enemy.height)
-        enemies.push(vijand);
+        enemies.push(new Enemy());
     }
 }
 
 function draw() {
     background(gamescreen);
     textSize(45);
-    text("aantal koeëls:" + bullet, 1540, 920);
-    image(r4, 1500, 920, r4.width / 2, r4.height / 2);
-    if (timer > 0) {
-        timer -= (deltaTime / 1000);
-    }
     image(scope, mouseX - 250, mouseY - 250, 500, 500);
     if (mouseIsPressed) {
 
         if (timer <= 0 && !reload.isPlaying()) {
-            // Shiet de kogel
+            //Shiet de kogel
             timer = delay;
             shot.play();
             bullet--;
@@ -91,7 +84,8 @@ function draw() {
                 bullet = 30;
             }
             for (var i = enemies.length - 1; i >= 0; i--) {
-                if (enemies[i].valMisschienDood(mouseX, mouseY)) {
+                enemies[i].valMisschienDood(mouseX, mouseY)
+                if (enemies[i].isDood) {
                     enemies.splice(i, 1);
                     spawn_vijand(1)
                 }
@@ -103,5 +97,10 @@ function draw() {
     enemies.forEach(enemy => {
         enemy.teken()
     })
-
+    tint(0)
+    text("aantal koeëls:" + bullet, width - 400, height - 100);
+    image(r4, width - r4.width / 2 - 100, height - r4.height / 2 - 100, r4.width / 2, r4.height / 2);
+    if (timer > 0) {
+        timer -= (deltaTime / 1000);
+    }
 }
