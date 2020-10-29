@@ -132,7 +132,7 @@ class Gokspel {
     }
 
     if (this.speler.budget == 0) {
-      text("Jammer, "+this.speler.naam+" :(\nDruk SPATIE voor nieuw spel",0,0,canvas.width,300);
+      text("Jammel, "+this.speler.naam+" :(\nDruk SPATIE voor nieuw spel",0,0,canvas.width,300);
       this.steen.teken();
     }
     pop();
