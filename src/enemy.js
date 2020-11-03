@@ -6,7 +6,7 @@ class Enemy {
         this.x = random(0, width - this.width);
         this.y = random(0, height - this.height);
         this.isDood = false;
-        this.lifeTime = 5;
+        this.lifeTime = 3;
     }
 
     update() {
@@ -23,6 +23,8 @@ class Enemy {
     valMisschienDood(x, y) {
         if (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) {
             this.isDood = true;
+            return true;
         }
+        return false;
     }
 }
