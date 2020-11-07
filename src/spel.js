@@ -6,19 +6,25 @@ class Spel {
         this.inMenu = true;
         this.inIntro = false;
         this.inLevel = false;
+        this.recoilX = 0;
+        this.recoilY = 0;
     }
 
     laad() {
         this.scopePlaatje = loadImage("assets/images/scope.png");
         this.achtergondPlaatje = loadImage("assets/images/backgrounds/ddd.png");
-        this.r4Plaatje = loadImage("assets/images/r4.png");
 
-        this.shotGeluid = loadSound('assets/sounds/gunshot.mp3');
         this.reloadGeluid = loadSound('assets/sounds/gunreload.mp3');
 
         this.mflashPlaatje = loadImage("assets/images/mflash.png")
         this.hartPlaatje = loadImage("assets/images/heart.png")
         this.profielPlaatje = loadImage("assets/images/profilepic.png");
+
+        // De verschillende wapens
+        this.vectorR4 = new Wapen("Vector R4", 30, 1.5, 3.0, loadImage("assets/images/r4.png"), loadSound('assets/sounds/gunshot.mp3'));
+        this.fnFAL = new Wapen("FN FAL", 20, 0.8, 5.0, loadImage("assets/images/FAL-rifle.png"), loadSound('assets/sounds/gunshot.mp3'));
+        this.fnMAG = new Wapen("FN MAG", 60, 3.0, 1.8, loadImage("assets/images/MAG-gun.png"), loadSound('assets/sounds/gunshot.mp3'));
+
         this.enemyImages.push(loadImage("assets/images/enemies/enemy1.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy2.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy3.png"));
@@ -44,6 +50,7 @@ class Spel {
     }
 
     startLevel(level) {
+        this.level = level;
         this.inLevel = true;
         this.inMenu = false;
         this.inIntro = false;
@@ -52,14 +59,28 @@ class Spel {
         this.video.stop();
         this.menuSong.stop();
 
-        // Level 'settings'
-        this.level = level;
-        this.tijdOver = level * 10;
+        switch (level) {
+            case 1:
+                this.wapen = this.vectorR4;
+                break;
+            case 2:
+                this.wapen = this.fnFAL;
+                break;
+            case 3:
+                this.wapen = this.fnMAG;
+                break;
+            default:
+                this.wapen = this.fnMAG;
+                break;
+        }
+
+        // Standaard/testing instellingen
+        this.tijdOver = level * 20;
         this.score = 0;
-        this.doel = 100 * level;
-        this.wapenTimer = 0.5;
-        this.ammo = 30;
-        this.levens = level + 3;
+        this.doel = 250 * level;
+        this.wapenTimer = 0;
+        this.levens = 4;
+        this.ammo = this.wapen.maxCapacity;
     }
 
     startIntro() {
@@ -87,30 +108,23 @@ class Spel {
         else if (this.inLevel) {
             noCursor();
             imageMode(CORNER)
+
             if (mouseIsPressed) {
                 if (this.wapenTimer <= 0 && !this.reloadGeluid.isPlaying()) {
-                    // Shiet de kogel
-                    this.wapenTimer = 0.4;
-                    this.shotGeluid.play();
-                    this.ammo--;
-
-                    // Muzzle Flash effect
-                    this.tekenMuzzleFlash = true;
-
                     if (this.ammo == 0) {
-                        this.reloadGeluid.play();
-                        this.ammo = 30;
+                        this.herlaad();
                     }
-
-                    for (var i = 0; i < this.enemies.length; i++) {
-                        if (this.enemies[i].valMisschienDood(mouseX, mouseY)) {
-                            this.score += 10;
-                        }
+                    else {
+                        this.schiet();
                     }
                 }
             }
+
             for (var i = 0; i < this.enemies.length; i++) {
-                this.enemies[i].update();
+                this.enemies[i].beweeg();
+                if (this.enemies[i].verloopTijd()) {
+                    this.levens--;
+                }
             }
 
             for (var i = this.enemies.length - 1; i >= 0; i--) {
@@ -122,11 +136,15 @@ class Spel {
             if (this.wapenTimer > 0) {
                 this.wapenTimer -= (deltaTime / 1000);
             }
+            this.recoilX /= 1.2;
+            this.recoilY /= 1.2;
+
             this.tijdOver -= (deltaTime / 1000);
             if (this.score >= this.doel) {
                 this.inLevel = false;
+                this.gameOver = false;
             }
-            if (this.tijdOver <= 0.0) {
+            if (this.tijdOver <= 0.0 || this.levens <= 0) {
                 this.inLevel = false;
                 this.gameOver = true;
             }
@@ -141,6 +159,44 @@ class Spel {
                 }
             }
         }
+    }
+
+    schiet() {
+        // Shiet de kogel
+        this.wapenTimer = 1.0 / this.wapen.rof;
+        this.wapen.geluid.play();
+        this.ammo--;
+
+        // Muzzle Flash effect
+        this.tekenMuzzleFlash = true;
+        this.muzzleX = mouseX - this.recoilX;
+        this.muzzleY = mouseY - this.recoilY;
+
+        // Raak vijanden
+        var geraakt = false;
+        for (var i = 0; i < this.enemies.length; i++) {
+            var resultaat = this.enemies[i].valMisschienDood(mouseX - this.recoilX, mouseY - this.recoilY);
+            if (resultaat == 2) {
+                this.score += 50;
+                geraakt = true;
+            } else if (resultaat == 1) {
+                this.score += 10;
+                geraakt = true;
+            }
+        }
+        // Score omlaag als geen vijanden worden geraakt
+        if (!geraakt) {
+            this.score -= 5;
+        }
+
+        // Recoil effect
+        this.recoilY += this.wapen.recoilAmount * random(50, 70);
+        this.recoilX += this.wapen.recoilAmount * random(-10, 10);
+    }
+
+    herlaad() {
+        this.reloadGeluid.play();
+        this.ammo = this.wapen.maxCapacity;
     }
 
     teken() {
@@ -170,11 +226,12 @@ class Spel {
             textSize(36);
             textStyle(BOLD);
             textAlign(LEFT);
-            text("Aantal Koeëls:" + this.ammo, width - 420, height - 200);
-            image(this.r4Plaatje, width - this.r4Plaatje.width / 2 - 100, height - this.r4Plaatje.height / 2 - 50, this.r4Plaatje.width / 2, this.r4Plaatje.height / 2);
+            text(this.wapen.naam + " - " + this.ammo + "/" + this.wapen.maxCapacity, width - 420, height - 200);
+            image(this.wapen.plaatje, width - this.wapen.plaatje.width / 2 - 100,
+                height - this.wapen.plaatje.height / 2 - 50, this.wapen.plaatje.width / 2, this.wapen.plaatje.height / 2);
 
             if (this.tekenMuzzleFlash) {
-                image(this.mflashPlaatje, mouseX + 30 - 250, mouseY - 10 - 250, 500, 500);
+                image(this.mflashPlaatje, this.muzzleX + 30 - 250, this.muzzleY - 10 - 250, 500, 500);
                 this.tekenMuzzleFlash = false;
             }
 
@@ -199,7 +256,7 @@ class Spel {
                 image(this.hartPlaatje, .5 * HEART_SIZE + i * HEART_SIZE + 10, windowHeight - 50, HEART_SIZE, HEART_SIZE);
             }
             imageMode(CORNER)
-            image(this.scopePlaatje, mouseX - 250, mouseY - 250, 500, 500);
+            image(this.scopePlaatje, mouseX - 250 - this.recoilX, mouseY - 250 - this.recoilY, 500, 500);
         } else {
             cursor(ARROW);
             image(this.startscreen, 0, 0, width, height);
