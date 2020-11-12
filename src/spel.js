@@ -21,9 +21,9 @@ class Spel {
         this.profielPlaatje = loadImage("assets/images/profilepic.png");
 
         // De verschillende wapens
-        this.vectorR4 = new Wapen("Vector R4", 30, 1.5, 3.0, loadImage("assets/images/r4.png"), loadSound('assets/sounds/gunshot.mp3'));
-        this.fnFAL = new Wapen("FN FAL", 20, 0.8, 5.0, loadImage("assets/images/FAL-rifle.png"), loadSound('assets/sounds/gunshot.mp3'));
-        this.fnMAG = new Wapen("FN MAG", 60, 3.0, 1.8, loadImage("assets/images/MAG-gun.png"), loadSound('assets/sounds/gunshot.mp3'));
+        this.vectorR4 = new Wapen("Vector R4", 30, 2.0, 3.0, loadImage("assets/images/r4.png"), loadSound('assets/sounds/gunshot.mp3'));
+        this.fnFAL = new Wapen("FN FAL", 20, 1.2, 5.0, loadImage("assets/images/FAL-rifle.png"), loadSound('assets/sounds/gunshot.mp3'));
+        this.fnMAG = new Wapen("FN MAG", 60, 6.0, 1.8, loadImage("assets/images/MAG-gun.png"), loadSound('assets/sounds/gunshot.mp3'));
 
         this.enemyImages.push(loadImage("assets/images/enemies/enemy1.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy2.png"));
