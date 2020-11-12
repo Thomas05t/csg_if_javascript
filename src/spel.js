@@ -45,7 +45,6 @@ class Spel {
     }
 
     startMenu() {
-        this.spawnVijand(2);
         this.menuSong.loop();
     }
 
@@ -73,14 +72,16 @@ class Spel {
                 this.wapen = this.fnMAG;
                 break;
         }
+        this.ammo = this.wapen.maxCapacity;
+        this.wapenTimer = 0;
+        this.score = 0;
+        this.spawnTimer = 0;
 
         // Standaard/testing instellingen
-        this.tijdOver = level * 20;
-        this.score = 0;
-        this.doel = 250 * level;
-        this.wapenTimer = 0;
+        this.tijdOver = 30 + (level-1) * 10;
+        this.doel = 200 + (level-1) * 150;
         this.levens = 4;
-        this.ammo = this.wapen.maxCapacity;
+        this.maxVijanden = level + 1;
     }
 
     startIntro() {
@@ -124,13 +125,29 @@ class Spel {
                 this.enemies[i].beweeg();
                 if (this.enemies[i].verloopTijd()) {
                     this.levens--;
+                    this.score -= 10;
                 }
             }
 
             for (var i = this.enemies.length - 1; i >= 0; i--) {
                 if (this.enemies[i].isDood) {
                     this.enemies.splice(i, 1);
-                    this.spawnVijand(1)
+                }
+            }
+
+            this.spawnTimer -= (deltaTime / 1000);
+
+            if (this.enemies.length == 0 && this.spawnTimer > 0.2)
+            {
+                this.spawnTimer = 0.2;
+            }
+
+            if (this.spawnTimer <= 0)
+            {
+                if (this.enemies.length < this.maxVijanden)
+                {
+                    this.spawnTimer = random(0.5, 1.5);
+                    this.spawnVijand(1); 
                 }
             }
             if (this.wapenTimer > 0) {
@@ -177,7 +194,7 @@ class Spel {
         for (var i = 0; i < this.enemies.length; i++) {
             var resultaat = this.enemies[i].valMisschienDood(mouseX - this.recoilX, mouseY - this.recoilY);
             if (resultaat == 2) {
-                this.score += 50;
+                this.score += 25;
                 geraakt = true;
             } else if (resultaat == 1) {
                 this.score += 10;
@@ -208,15 +225,17 @@ class Spel {
             textStyle(BOLD);
             textAlign(CENTER, CENTER);
             textSize(48);
-            text("DRUK OP SPATIE OM TE BEGINNEN", width / 2, height / 2 + 200);
+            text("[SPATIE] BEKIJK INTRO", width / 2, height / 2 + 200);
+            textSize(38);
+            text("[ENTER] START GAME / SKIP INTRO", width / 2, height / 2 + 260);
+            textSize(28);
+            text("Uitleg: Probeer alle vijanden uit te schakelen binnen het tijdslimiet", width / 2, height / 2 + 320);
         } else if (this.inIntro) {
             background(255, 0, 255);
         }
         else if (this.inLevel) {
             imageMode(CORNER);
             background(this.achtergondPlaatje);
-            image(this.profielPlaatje, 0, 0, this.profielPlaatje.width / 5, this.profielPlaatje.height / 5)
-
 
             this.enemies.forEach(enemy => {
                 enemy.teken();
@@ -236,16 +255,18 @@ class Spel {
             }
 
             // HUD
+            fill('rgba(0%,0%,0%,0.3)');
+            rect(0, 0, width, 64);
             textFont('monospace');
-            fill(20);
+            fill(250);
             textSize(36);
             textAlign(CENTER, CENTER);
             textStyle(BOLD);
-            text(this.score + "/" + this.doel, width / 2, 40);
-            text("TIJD: " + this.tijdOver.toFixed(2) + "s", 300, 40);
-            text("LEVEL: " + this.level, width - 300, 40);
-
-
+            text(this.score + "/" + this.doel, width / 2, 32);
+            text("TIJD: " + this.tijdOver.toFixed(2) + "s", 300, 32);
+            text("LEVEL: " + this.level, width - 300, 32);
+            
+            image(this.profielPlaatje, 0, 0, this.profielPlaatje.width / 5, this.profielPlaatje.height / 5)
 
             // Healthbar
             for (var i = 0; i < this.levens; i++) {
@@ -271,13 +292,13 @@ class Spel {
                 text("GAME OVER", width / 2, height / 2 - 100);
                 textStyle(NORMAL);
                 textSize(32);
-                text("Je score was: " + this.score + "/" + this.doel, width / 2, height / 2 + 50);
+                text("Score: " + this.score + "/" + this.doel, width / 2, height / 2 + 50);
             } else {
                 textStyle(BOLD);
                 text("LEVEL " + this.level + "  GEHAALD!", width / 2, height / 2 - 100);
                 textStyle(NORMAL);
                 textSize(32);
-                text("En je had nog " + this.tijdOver.toFixed(2) + "s over!", width / 2, height / 2 + 50);
+                text("Tijd over: " + this.tijdOver.toFixed(2) + "s over!", width / 2, height / 2 + 50);
             }
         }
     }

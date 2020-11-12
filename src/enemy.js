@@ -6,9 +6,9 @@ class Enemy {
         this.x = random(0, width - this.width);
         this.y = random(0, height - this.height);
         this.isDood = false;
-        this.lifeTime = 10000;
-        this.snelheidX = random(-5, 5);
-        this.snelheidY = random(-2, 2);
+        this.lifeTime = 4;
+        this.snelheidX = random(-6, 6);
+        this.snelheidY = random(-1.2, 1.2);
 
         this.headShotX = this.x + 0.3 * this.width;
         this.headShotY = this.y;
@@ -39,6 +39,7 @@ class Enemy {
         this.headShotX = this.x + 0.3 * this.width;
         this.headShotY = this.y;
     }
+
     verloopTijd() { 
         // Verloop tijd
         this.lifeTime -= (deltaTime / 1000);
@@ -50,11 +51,11 @@ class Enemy {
     }
 
     teken() {
+        // fill('rgba(100%,10%,10%,0.16)');
+        // rect(this.x, this.y, this.width, this.height);
+        // fill('rgba(10%,100%,10%,0.26)');
+        // rect(this.headShotX, this.headShotY, this.headShotWidth, this.headShotHeight);
         image(this.sprite, this.x, this.y, this.width, this.height);
-        fill('rgba(100%,10%,10%,0.3)');
-        rect(this.x, this.y, this.width, this.height);
-        fill('rgba(10%,100%,10%,0.3)');
-        rect(this.headShotX, this.headShotY, this.headShotWidth, this.headShotHeight);
     }
 
     valMisschienDood(x, y) {
