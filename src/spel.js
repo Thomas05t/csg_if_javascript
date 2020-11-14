@@ -328,8 +328,6 @@ class Spel {
 
             if (this.gameOver) {
                 image(this.gameoverScreen, 0, 0, width, height);
-                textStyle(BOLD);
-                text("GAME OVER", width / 2, height / 2 - 100);
                 textStyle(NORMAL);
                 textSize(32);
                 text("Score: " + this.score + "/" + this.doel, width / 2, height / 2 + 50);
