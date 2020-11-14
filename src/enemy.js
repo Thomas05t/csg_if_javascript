@@ -6,9 +6,9 @@ class Enemy {
         this.x = random(0, width - this.width);
         this.y = random(0, height - this.height);
         this.isDood = false;
-        this.lifeTime = 4;
-        this.snelheidX = random(-6, 6);
-        this.snelheidY = random(-1.2, 1.2);
+        this.lifeTime = 5;
+        this.snelheidX = random(-5, 5);
+        this.snelheidY = random(-1, 1);
 
         this.headShotX = this.x + 0.3 * this.width;
         this.headShotY = this.y;

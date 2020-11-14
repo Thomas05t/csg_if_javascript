@@ -12,18 +12,23 @@ class Spel {
 
     laad() {
         this.scopePlaatje = loadImage("assets/images/scope.png");
-        this.achtergondPlaatje = loadImage("assets/images/backgrounds/ddd.png");
 
-        this.reloadGeluid = loadSound('assets/sounds/gunreload.mp3');
+        this.backgrounds = {};
+        this.backgrounds[1] = loadImage("assets/images/backgrounds/background_1.png");
+        this.backgrounds[2] = loadImage("assets/images/backgrounds/background_2.jpg");
+        this.backgrounds[3] = loadImage("assets/images/backgrounds/background_3.png");
+        this.backgrounds[4] = loadImage("assets/images/backgrounds/background_4.png");
+
+        this.headshotGeluid = loadSound('assets/sounds/Headshot_sound.mp3');
 
         this.mflashPlaatje = loadImage("assets/images/mflash.png")
         this.hartPlaatje = loadImage("assets/images/heart.png")
         this.profielPlaatje = loadImage("assets/images/profilepic.png");
 
         // De verschillende wapens
-        this.vectorR4 = new Wapen("Vector R4", 30, 2.5, 3.0, loadImage("assets/images/r4.png"), loadSound('assets/sounds/gunshot.mp3'));
-        this.fnFAL = new Wapen("FN FAL", 20, 1.5, 5.0, loadImage("assets/images/FAL-rifle.png"), loadSound('assets/sounds/gunshot.mp3'));
-        this.fnMAG = new Wapen("FN MAG", 60, 6.0, 1.8, loadImage("assets/images/MAG-gun.png"), loadSound('assets/sounds/gunshot.mp3'));
+        this.vectorR4 = new Wapen("Vector R4", 30, 2.5, 3.0, loadImage("assets/images/r4.png"), loadSound('assets/sounds/R4_shot.mp3'), loadSound('assets/sounds/R4_reload.mp3'));
+        this.fnFAL = new Wapen("FN FAL", 20, 1.5, 5.0, loadImage("assets/images/FAL-rifle.png"), loadSound('assets/sounds/FAL_shot.mp3'), loadSound('assets/sounds/FAL_reload.mp3'));
+        this.fnMAG = new Wapen("FN MAG", 60, 6.0, 1.8, loadImage("assets/images/MAG-gun.png"), loadSound('assets/sounds/MAG_shot.mp3'), loadSound('assets/sounds/MAG_reload.mp3'));
 
         this.enemyImages.push(loadImage("assets/images/enemies/enemy1.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy2.png"));
@@ -31,8 +36,11 @@ class Spel {
         this.enemyImages.push(loadImage("assets/images/enemies/enemy4.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy5.png"));
 
-        this.menuSong = createAudio('assets/sounds/diekaplyn.mp3');
         this.startscreen = loadImage("assets/images/backgrounds/ZuidAfrika1.png");
+        this.gameoverScreen = loadImage("assets/images/backgrounds/gameover_screen.png");
+        this.victoryScreen = loadImage("assets/images/backgrounds/victory_screen.png");
+
+        this.menuSong = createAudio('assets/sounds/diekaplyn.mp3');
         this.video = createVideo('assets/videos/intro.mp4');
         this.video.hide();
     }
@@ -61,12 +69,26 @@ class Spel {
         switch (level) {
             case 1:
                 this.wapen = this.vectorR4;
+                this.maxVijanden = 2;
+                this.levens = 5;
+                this.doel = 250;
+                this.tijdOver = 45;
                 break;
             case 2:
                 this.wapen = this.fnFAL;
+                this.maxVijanden = 3;
+                this.levens = 6;
+                this.doel = 350;
+
+
+                this.tijdOver = 55;
                 break;
             case 3:
                 this.wapen = this.fnMAG;
+                this.maxVijanden = 3;
+                this.levens = 7;
+                this.doel = 600;
+                this.tijdOver = 70;
                 break;
             default:
                 this.wapen = this.fnMAG;
@@ -76,12 +98,6 @@ class Spel {
         this.wapenTimer = 0;
         this.score = 0;
         this.spawnTimer = 0;
-
-        // Standaard/testing instellingen
-        this.tijdOver = 30 + (level-1) * 10;
-        this.doel = 200 + (level-1) * 150;
-        this.levens = 4;
-        this.maxVijanden = level + 1;
     }
 
     startIntro() {
@@ -110,8 +126,13 @@ class Spel {
             noCursor();
             imageMode(CORNER)
 
+            // Dikke cheat
+            if (keyIsDown(87)) {
+                this.score += 100;
+            }
+
             if (mouseIsPressed) {
-                if (this.wapenTimer <= 0 && !this.reloadGeluid.isPlaying()) {
+                if (this.wapenTimer <= 0 && !this.wapen.reloadGeluid.isPlaying()) {
                     if (this.ammo == 0) {
                         this.herlaad();
                     }
@@ -137,17 +158,16 @@ class Spel {
 
             this.spawnTimer -= (deltaTime / 1000);
 
-            if (this.enemies.length == 0 && this.spawnTimer > 0.2)
-            {
-                this.spawnTimer = 0.2;
+            if (this.enemies.length == 0 && this.spawnTimer > 0.8) {
+                this.spawnTimer = 0.8;
+            } else if (this.enemies.length == this.maxVijanden) {
+                this.spawnTimer = 2.0;
             }
 
-            if (this.spawnTimer <= 0)
-            {
-                if (this.enemies.length < this.maxVijanden)
-                {
+            if (this.spawnTimer <= 0) {
+                if (this.enemies.length < this.maxVijanden) {
                     this.spawnTimer = random(0.5, 1.5);
-                    this.spawnVijand(1); 
+                    this.spawnVijand(1);
                 }
             }
             if (this.wapenTimer > 0) {
@@ -181,7 +201,7 @@ class Spel {
     schiet() {
         // Shiet de kogel
         this.wapenTimer = 1.0 / this.wapen.rof;
-        this.wapen.geluid.play();
+        this.wapen.shietGeluid.play();
         this.ammo--;
 
         // Muzzle Flash effect
@@ -195,6 +215,7 @@ class Spel {
             var resultaat = this.enemies[i].valMisschienDood(mouseX - this.recoilX, mouseY - this.recoilY);
             if (resultaat == 2) {
                 this.score += 25;
+                this.headshotGeluid.play();
                 geraakt = true;
             } else if (resultaat == 1) {
                 this.score += 10;
@@ -212,7 +233,7 @@ class Spel {
     }
 
     herlaad() {
-        this.reloadGeluid.play();
+        this.wapen.reloadGeluid.play();
         this.ammo = this.wapen.maxCapacity;
     }
 
@@ -235,7 +256,7 @@ class Spel {
         }
         else if (this.inLevel) {
             imageMode(CORNER);
-            background(this.achtergondPlaatje);
+            background(this.backgrounds[this.level]);
 
             this.enemies.forEach(enemy => {
                 enemy.teken();
@@ -265,7 +286,7 @@ class Spel {
             text(this.score + "/" + this.doel, width / 2, 32);
             text("TIJD: " + this.tijdOver.toFixed(2) + "s", 300, 32);
             text("LEVEL: " + this.level, width - 300, 32);
-            
+
             image(this.profielPlaatje, 0, 0, this.profielPlaatje.width / 5, this.profielPlaatje.height / 5)
 
             // Healthbar
@@ -280,20 +301,21 @@ class Spel {
             image(this.scopePlaatje, mouseX - 250 - this.recoilX, mouseY - 250 - this.recoilY, 500, 500);
         } else {
             cursor(ARROW);
-            image(this.startscreen, 0, 0, width, height);
-            fill(0);
 
+            fill(0);
             textAlign(CENTER, CENTER);
             textFont('monospace');
             textSize(84);
 
             if (this.gameOver) {
+                image(this.gameoverScreen, 0, 0, width, height);
                 textStyle(BOLD);
                 text("GAME OVER", width / 2, height / 2 - 100);
                 textStyle(NORMAL);
                 textSize(32);
                 text("Score: " + this.score + "/" + this.doel, width / 2, height / 2 + 50);
             } else {
+                image(this.victoryScreen, 0, 0, width, height);
                 textStyle(BOLD);
                 text("LEVEL " + this.level + "  GEHAALD!", width / 2, height / 2 - 100);
                 textStyle(NORMAL);
