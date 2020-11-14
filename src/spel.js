@@ -148,7 +148,7 @@ class Spel {
                 this.enemies[i].beweeg();
                 if (this.enemies[i].verloopTijd()) {
                     this.levens--;
-                    this.score -= 10;
+                    this.score -= 15;
                 }
             }
 
@@ -262,10 +262,11 @@ class Spel {
             textAlign(CENTER, CENTER);
             textSize(48);
             text("[SPATIE] BEKIJK INTRO", width / 2, height / 2 + 200);
-            textSize(38);
-            text("[ENTER] START GAME / SKIP INTRO", width / 2, height / 2 + 260);
+            textSize(32);
+            text("[ENTER] START GAME / SKIP INTRO", width / 2, height / 2 + 250);
+            text("[LEFT MOUSE] SCHIET", width / 2, height / 2 + 280);
             textSize(28);
-            text("Uitleg: Probeer alle vijanden uit te schakelen binnen het tijdslimiet", width / 2, height / 2 + 320);
+            text("Uitleg: Haal het puntendoel binnen het tijdslimiet. Je krijgt 10 punten voor elke vijand die je uitschakeld. Een headshot is 25 punten. Schiet niet mis want dan verlies je punten. Als je de vijanden niet uitschakeld binnen een bepaalde tijd verlies je levens en punten. Je hebt gameover als je levens op zijn of als de tijd over is.", 150, height / 2 + 220, width - 150, 400);
         } else if (this.inIntro) {
             background(255, 0, 255);
         }
