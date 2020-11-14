@@ -39,8 +39,9 @@ class Spel {
         this.startscreen = loadImage("assets/images/backgrounds/ZuidAfrika1.png");
         this.gameoverScreen = loadImage("assets/images/backgrounds/gameover_screen.png");
         this.victoryScreen = loadImage("assets/images/backgrounds/victory_screen.png");
-
+        this.endScreen = loadImage("assets/images/backgrounds/end_screen.png");
         this.menuSong = createAudio('assets/sounds/diekaplyn.mp3');
+        this.endSong = loadSound('assets/sounds/Lied Einde.mp3');
         this.video = createVideo('assets/videos/intro.mp4');
         this.video.hide();
     }
@@ -61,6 +62,7 @@ class Spel {
         this.inLevel = true;
         this.inMenu = false;
         this.inIntro = false;
+        this.inEndScreen = false;
         this.canvas.show();
         this.video.hide();
         this.video.stop();
@@ -180,10 +182,23 @@ class Spel {
             if (this.score >= this.doel) {
                 this.inLevel = false;
                 this.gameOver = false;
+                if (this.level == 4) {
+                    this.inEndScreen = true;
+                }
             }
             if (this.tijdOver <= 0.0 || this.levens <= 0) {
                 this.inLevel = false;
                 this.gameOver = true;
+            }
+        } else if (this.inEndScreen) {
+            if (!this.endSong.isPlaying())
+            {
+                this.endSong.loop();
+            }
+            if (keyIsDown(ENTER)) {
+                this.endSong.stop();
+                this.inEndScreen = false;
+                this.inMenu = true;
             }
         } else {
             if (this.gameOver) {
@@ -299,7 +314,11 @@ class Spel {
             }
             imageMode(CORNER)
             image(this.scopePlaatje, mouseX - 250 - this.recoilX, mouseY - 250 - this.recoilY, 500, 500);
-        } else {
+        } else if (this.inEndScreen) {
+            cursor(ARROW);
+            image(this.endScreen, 0, 0, width, height);
+        }
+        else {
             cursor(ARROW);
 
             fill(0);
