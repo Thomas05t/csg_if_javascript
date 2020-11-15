@@ -11,7 +11,8 @@ class Spel {
     }
 
     laad() {
-        this.scopePlaatje = loadImage("assets/images/scope.png");
+        this.normaleScope = loadImage("assets/images/scope.png");
+        this.elandScope = loadImage("assets/images/Eland_Scope.png");
 
         this.backgrounds = {};
         this.backgrounds[1] = loadImage("assets/images/backgrounds/background_1.png");
@@ -26,9 +27,11 @@ class Spel {
         this.profielPlaatje = loadImage("assets/images/profilepic.png");
 
         // De verschillende wapens
-        this.vectorR4 = new Wapen("Vector R4", 30, 2.5, 3.0, loadImage("assets/images/r4.png"), loadSound('assets/sounds/R4_shot.mp3'), loadSound('assets/sounds/R4_reload.mp3'));
-        this.fnFAL = new Wapen("FN FAL", 20, 1.5, 5.0, loadImage("assets/images/FAL-rifle.png"), loadSound('assets/sounds/FAL_shot.mp3'), loadSound('assets/sounds/FAL_reload.mp3'));
-        this.fnMAG = new Wapen("FN MAG", 60, 6.0, 1.8, loadImage("assets/images/MAG-gun.png"), loadSound('assets/sounds/MAG_shot.mp3'), loadSound('assets/sounds/MAG_reload.mp3'));
+        this.vectorR4 = new Wapen("Vector R4", 30, 2.5, 3.0, loadImage("assets/images/r4.png"), 6, loadSound('assets/sounds/R4_shot.mp3'), loadSound('assets/sounds/R4_reload.mp3'));
+        this.fnFAL = new Wapen("FN FAL", 20, 1.5, 5.0, loadImage("assets/images/FAL-rifle.png"), 6, loadSound('assets/sounds/FAL_shot.mp3'), loadSound('assets/sounds/FAL_reload.mp3'));
+        this.fnMAG = new Wapen("FN MAG", 60, 6.0, 1.8, loadImage("assets/images/MAG-gun.png"), 1, loadSound('assets/sounds/MAG_shot.mp3'), loadSound('assets/sounds/MAG_reload.mp3'));
+        this.eland = new Wapen("Eland", 200, 10.0, 1.0, loadImage("assets/images/Eland.png"), 2, loadSound('assets/sounds/MAG_shot.mp3'), loadSound('assets/sounds/MAG_reload.mp3'));
+
 
         this.enemyImages.push(loadImage("assets/images/enemies/enemy1.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy2.png"));
@@ -36,11 +39,13 @@ class Spel {
         this.enemyImages.push(loadImage("assets/images/enemies/enemy4.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy5.png"));
 
+        this.bossPlaatje = loadImage('assets/images/MPLA_tank.png');
+
         this.startscreen = loadImage("assets/images/backgrounds/ZuidAfrika1.png");
         this.gameoverScreen = loadImage("assets/images/backgrounds/gameover_screen.png");
         this.victoryScreen = loadImage("assets/images/backgrounds/victory_screen.png");
         this.endScreen = loadImage("assets/images/backgrounds/end_screen.png");
-        this.menuSong = createAudio('assets/sounds/diekaplyn.mp3');
+        this.menuSong = loadSound('assets/sounds/diekaplyn.mp3');
         this.endSong = loadSound('assets/sounds/Lied Einde.mp3');
         this.video = createVideo('assets/videos/intro.mp4');
         this.video.hide();
@@ -68,6 +73,8 @@ class Spel {
         this.video.stop();
         this.menuSong.stop();
 
+        this.enemies.length = 0;
+        this.inBossFight = false;
         switch (level) {
             case 1:
                 this.wapen = this.vectorR4;
@@ -75,22 +82,35 @@ class Spel {
                 this.levens = 5;
                 this.doel = 250;
                 this.tijdOver = 45;
+                this.spawnVijanden = true;
+                this.scopePlaatje = this.normaleScope;
                 break;
             case 2:
                 this.wapen = this.fnFAL;
                 this.maxVijanden = 3;
                 this.levens = 6;
                 this.doel = 350;
-
-
                 this.tijdOver = 55;
+                this.spawnVijanden = true;
+                this.scopePlaatje = this.normaleScope;
                 break;
             case 3:
                 this.wapen = this.fnMAG;
-                this.maxVijanden = 3;
+                this.maxVijanden = 5;
                 this.levens = 7;
                 this.doel = 600;
                 this.tijdOver = 70;
+                this.spawnVijanden = true;
+                this.scopePlaatje = this.normaleScope;
+                break;
+            case 4:
+                this.spawnVijanden = false;
+                this.tijdOver = 80;
+                this.levens = 8;
+                this.wapen = this.eland;
+                this.scopePlaatje = this.elandScope;
+                this.boss = new Boss(this.bossPlaatje);
+                this.inBossFight = true;
                 break;
             default:
                 this.wapen = this.fnMAG;
@@ -158,20 +178,27 @@ class Spel {
                 }
             }
 
-            this.spawnTimer -= (deltaTime / 1000);
-
-            if (this.enemies.length == 0 && this.spawnTimer > 0.8) {
-                this.spawnTimer = 0.8;
-            } else if (this.enemies.length == this.maxVijanden) {
-                this.spawnTimer = 2.0;
+            if (this.inBossFight) {
+                this.boss.beweeg();
             }
 
-            if (this.spawnTimer <= 0) {
-                if (this.enemies.length < this.maxVijanden) {
-                    this.spawnTimer = random(0.5, 1.5);
-                    this.spawnVijand(1);
+            if (this.spawnVijanden) {
+                this.spawnTimer -= (deltaTime / 1000);
+
+                if (this.enemies.length == 0 && this.spawnTimer > 0.8) {
+                    this.spawnTimer = 0.8;
+                } else if (this.enemies.length == this.maxVijanden) {
+                    this.spawnTimer = 2.0;
+                }
+
+                if (this.spawnTimer <= 0) {
+                    if (this.enemies.length < this.maxVijanden) {
+                        this.spawnTimer = random(0.5, 1.5);
+                        this.spawnVijand(1);
+                    }
                 }
             }
+
             if (this.wapenTimer > 0) {
                 this.wapenTimer -= (deltaTime / 1000);
             }
@@ -182,7 +209,12 @@ class Spel {
             if (this.score >= this.doel) {
                 this.inLevel = false;
                 this.gameOver = false;
-                if (this.level == 4) {
+                this.inEndScreen = false;
+            }
+            if (this.inBossFight) {
+                if (this.boss.isVerslagen) {
+                    this.inLevel = false;
+                    this.gameOver = false;
                     this.inEndScreen = true;
                 }
             }
@@ -191,14 +223,14 @@ class Spel {
                 this.gameOver = true;
             }
         } else if (this.inEndScreen) {
-            if (!this.endSong.isPlaying())
-            {
+            if (!this.endSong.isPlaying()) {
                 this.endSong.loop();
             }
             if (keyIsDown(ENTER)) {
                 this.endSong.stop();
                 this.inEndScreen = false;
                 this.inMenu = true;
+                this.startMenu();
             }
         } else {
             if (this.gameOver) {
@@ -237,9 +269,18 @@ class Spel {
                 geraakt = true;
             }
         }
+
+        // Raak boss
+        if (this.inBossFight) {
+            if (this.boss.raak(mouseX - this.recoilX, mouseY - this.recoilY)) {
+                geraakt = true;
+            }
+        }
+
+
         // Score omlaag als geen vijanden worden geraakt
         if (!geraakt) {
-            this.score -= 5;
+            this.score -= this.wapen.verliesPunten;
         }
 
         // Recoil effect
@@ -261,7 +302,7 @@ class Spel {
             textStyle(BOLD);
             textAlign(CENTER, CENTER);
             textSize(48);
-            text("[SPATIE] BEKIJK INTRO", width / 2, height / 2 + 200);
+            text("[SPATIE] BEKIJK INTRO / VOLGEND LEVEL", width / 2, height / 2 + 200);
             textSize(32);
             text("[ENTER] START GAME / SKIP INTRO", width / 2, height / 2 + 250);
             text("[LEFT MOUSE] SCHIET", width / 2, height / 2 + 280);
@@ -277,6 +318,10 @@ class Spel {
             this.enemies.forEach(enemy => {
                 enemy.teken();
             })
+
+            if (this.inBossFight) {
+                this.boss.teken();
+            }
 
             fill(0)
             textSize(36);
@@ -299,7 +344,11 @@ class Spel {
             textSize(36);
             textAlign(CENTER, CENTER);
             textStyle(BOLD);
-            text(this.score + "/" + this.doel, width / 2, 32);
+            if (!this.inBossFight) {
+                text(this.score + "/" + this.doel, width / 2, 32);
+            } else {
+                text("MPLA Levens: " + this.boss.levens, width / 2, 32);
+            }
             text("TIJD: " + this.tijdOver.toFixed(2) + "s", 300, 32);
             text("LEVEL: " + this.level, width - 300, 32);
 
@@ -331,7 +380,12 @@ class Spel {
                 image(this.gameoverScreen, 0, 0, width, height);
                 textStyle(NORMAL);
                 textSize(32);
-                text("Score: " + this.score + "/" + this.doel, width / 2, height / 2 + 50);
+                if (!this.inBossFight) {
+                    text("Score: " + this.score + "/" + this.doel, width / 2, height / 2 + 50);
+                }
+                else {
+                    text("MPLA Levens: " + this.boss.levens, width / 2, 32);
+                }
             } else {
                 image(this.victoryScreen, 0, 0, width, height);
                 textStyle(BOLD);
