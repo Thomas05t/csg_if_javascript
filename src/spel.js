@@ -32,8 +32,7 @@ class Spel {
         this.vectorR4 = new Wapen("Vector R4", 30, 2.5, 3.0, loadImage("assets/images/r4.png"), 6, loadSound('assets/sounds/R4_shot.mp3'), loadSound('assets/sounds/R4_reload.mp3'));
         this.fnFAL = new Wapen("FN FAL", 20, 1.5, 5.0, loadImage("assets/images/FAL-rifle.png"), 6, loadSound('assets/sounds/FAL_shot.mp3'), loadSound('assets/sounds/FAL_reload.mp3'));
         this.fnMAG = new Wapen("FN MAG", 60, 6.0, 1.8, loadImage("assets/images/MAG-gun.png"), 1, loadSound('assets/sounds/MAG_shot.mp3'), loadSound('assets/sounds/MAG_reload.mp3'));
-        this.eland = new Wapen("Eland", 200, 10.0, 1.0, loadImage("assets/images/Eland.png"), 2, loadSound('assets/sounds/MAG_shot.mp3'), loadSound('assets/sounds/MAG_reload.mp3'));
-
+        this.eland = new Wapen("Eland", 200, 10.0, 1.0, loadImage("assets/images/Eland.png"), 2, loadSound('assets/sounds/Eland_firing_sound.mp3'), loadSound('assets/sounds/Eland_Reload.mp3'));
 
         this.enemyImages.push(loadImage("assets/images/enemies/enemy1.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy2.png"));
@@ -47,6 +46,7 @@ class Spel {
         this.bossPlaatje = loadImage('assets/images/MPLA_tank.png');
 
         this.startscreen = loadImage("assets/images/backgrounds/ZuidAfrika1.png");
+        this.civilianWarningScreen = loadImage("assets/images/backgrounds/civilians_warning.png");
         this.gameoverScreen = loadImage("assets/images/backgrounds/gameover_screen.png");
         this.victoryScreen = loadImage("assets/images/backgrounds/victory_screen.png");
         this.endScreen = loadImage("assets/images/backgrounds/end_screen.png");
@@ -58,9 +58,15 @@ class Spel {
 
     spawnVijand(aantal) {
         for (var i = 0; i < aantal; i++) {
-            var willekeurigePositie = int(random(0, this.enemyImages.length));
-            this.enemies.push(new Enemy(this.enemyImages[willekeurigePositie]));
+            var willekeurigeIndex = int(random(0, this.enemyImages.length));
+            this.enemies.push(new Enemy(this.enemyImages[willekeurigeIndex]));
         }
+    }
+
+    spawnCivilian()
+    {
+        var willekeurigeIndex = int(random(0, this.civilianImages.length));
+        this.civilians.push(new Civilian(this.civilianImages[willekeurigeIndex]));
     }
 
     startMenu() {
@@ -131,6 +137,8 @@ class Spel {
         this.wapenTimer = 0;
         this.score = 0;
         this.spawnTimer = 0;
+        this.civilianTimer = 0;
+        this.civiliansGeraakt = 0;
     }
 
     startIntro() {
@@ -189,6 +197,17 @@ class Spel {
                 }
             }
 
+            for (var i = 0; i < this.civilians.length; i++) {
+                this.civilians[i].beweeg();
+                this.civilians[i].verloopTijd();
+            }
+
+            for (var i = this.civilians.length - 1; i >= 0; i--) {
+                if (this.civilians[i].isDood) {
+                    this.civilians.splice(i, 1);
+                }
+            }
+
             if (this.inBossFight) {
                 this.boss.beweeg();
                 if (this.boss.ontvangSchade()) {
@@ -213,9 +232,19 @@ class Spel {
                 }
             }
 
+            if (this.spawnCivialians) {
+                if (this.civilianTimer > 0) {
+                    this.civilianTimer -= (deltaTime / 1000);
+                } else {
+                    this.spawnCivilian();
+                    this.civilianTimer = random(3, 6);
+                }
+            }
+
             if (this.wapenTimer > 0) {
                 this.wapenTimer -= (deltaTime / 1000);
             }
+
             this.recoilX /= 1.2;
             this.recoilY /= 1.2;
 
@@ -224,8 +253,7 @@ class Spel {
                 this.inLevel = false;
                 this.gameOver = false;
                 this.inEndScreen = false;
-                if (this.level == 4)
-                {
+                if (this.level == 4) {
                     this.inEndScreen = true;
                 }
             }
@@ -236,11 +264,18 @@ class Spel {
                     this.inEndScreen = true;
                 }
             }
-            if (this.tijdOver <= 0.0 || this.levens <= 0) {
+            if (this.tijdOver <= 0.0 || this.levens <= 0 || this.civiliansGeraakt >= 3) {
                 this.inLevel = false;
                 this.gameOver = true;
             }
-        } else if (this.inEndScreen) {
+        } else if (this.inCivilianWaarschuwing)
+        {
+            if (keyIsDown(ENTER)) {
+                this.startLevel(2);
+                this.inCivilianWaarschuwing = false;
+            }
+        } 
+        else if (this.inEndScreen) {
             if (!this.endSong.isPlaying()) {
                 this.endSong.loop();
             }
@@ -257,10 +292,25 @@ class Spel {
                 }
             } else {
                 if (keyIsDown(32)) {
-                    this.startLevel(this.level + 1);
+                    if (this.level == 1)
+                    {
+                        this.civilianWaarschuwing();
+                    } else
+                    {
+                        this.startLevel(this.level + 1);
+                    }
                 }
             }
         }
+    }
+
+    civilianWaarschuwing()
+    {
+        this.inCivilianWaarschuwing = true;
+        this.inLevel = false;
+        this.inMenu = false;
+        this.inIntro = false;
+        this.inEndScreen = false;
     }
 
     schiet() {
@@ -294,6 +344,15 @@ class Spel {
                 geraakt = true;
             }
         }
+
+        // Raak civilians
+        this.civilians.forEach(civilian => {
+            if (civilian.wordtPerongelukGeraakt(mouseX - this.recoilX, mouseY - this.recoilY)) {
+                this.levens--;
+                this.score -= 100;
+                this.civiliansGeraakt++;
+            }
+        });
 
 
         // Score omlaag als geen vijanden worden geraakt
@@ -336,6 +395,9 @@ class Spel {
             this.enemies.forEach(enemy => {
                 enemy.teken();
             })
+            this.civilians.forEach(civilian => {
+                civilian.teken();
+            })
 
             if (this.inBossFight) {
                 this.boss.teken();
@@ -345,7 +407,13 @@ class Spel {
             textSize(36);
             textStyle(BOLD);
             textAlign(LEFT);
-            text(this.wapen.naam + " - " + this.ammo + "/" + this.wapen.maxCapacity, width - 420, height - 200);
+            if (!this.wapen.reloadGeluid.isPlaying())
+            {
+                text(this.wapen.naam + " - " + this.ammo + "/" + this.wapen.maxCapacity, width - 420, height - 200);
+            } else
+            {
+                text(this.wapen.naam + " - HERLADEN...", width - 420, height - 200);
+            }
             image(this.wapen.plaatje, width - this.wapen.plaatje.width / 2 - 100,
                 height - this.wapen.plaatje.height / 2 - 50, this.wapen.plaatje.width / 2, this.wapen.plaatje.height / 2);
 
@@ -385,6 +453,11 @@ class Spel {
         } else if (this.inEndScreen) {
             cursor(ARROW);
             image(this.endScreen, 0, 0, width, height);
+        }
+        else if (this.inCivilianWaarschuwing) {
+            cursor(ARROW);
+
+            image(this.civilianWarningScreen, 0, 0, width, height);
         }
         else {
             cursor(ARROW);

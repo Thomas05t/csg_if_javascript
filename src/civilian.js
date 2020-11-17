@@ -1,8 +1,8 @@
-class Civalian {
+class Civilian {
     constructor(plaatje) {
         this.sprite = plaatje;
-        this.width = this.sprite.width / 4;
-        this.height = this.sprite.height / 4;
+        this.width = this.sprite.width / 2;
+        this.height = this.sprite.height / 2;
         this.x = random(0, width - this.width);
         this.y = random(0, height - this.height);
         this.isDood = false;
@@ -51,6 +51,7 @@ class Civalian {
     wordtPerongelukGeraakt(x, y) {
         if (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) {
             this.isDood = true;
+            console.log("GERAAKT!");
             return true;
         }
         return false;
