@@ -105,7 +105,7 @@ class Spel {
                 break;
             case 4:
                 this.spawnVijanden = false;
-                this.tijdOver = 80;
+                this.tijdOver = 60;
                 this.levens = 8;
                 this.wapen = this.eland;
                 this.scopePlaatje = this.elandScope;
@@ -180,6 +180,9 @@ class Spel {
 
             if (this.inBossFight) {
                 this.boss.beweeg();
+                if (this.boss.ontvangSchade()) {
+                    this.levens--;
+                }
             }
 
             if (this.spawnVijanden) {
@@ -210,6 +213,10 @@ class Spel {
                 this.inLevel = false;
                 this.gameOver = false;
                 this.inEndScreen = false;
+                if (this.level == 4)
+                {
+                    this.inEndScreen = true;
+                }
             }
             if (this.inBossFight) {
                 if (this.boss.isVerslagen) {
