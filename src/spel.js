@@ -1,7 +1,9 @@
 class Spel {
     constructor() {
         this.enemies = [];
+        this.civilians = [];
         this.enemyImages = [];
+        this.civilianImages = [];
         this.tekenMuzzleFlash = false;
         this.inMenu = true;
         this.inIntro = false;
@@ -38,6 +40,9 @@ class Spel {
         this.enemyImages.push(loadImage("assets/images/enemies/enemy3.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy4.png"));
         this.enemyImages.push(loadImage("assets/images/enemies/enemy5.png"));
+        this.civilianImages.push(loadImage("assets/images/civilians/civilian_1.png"));
+        this.civilianImages.push(loadImage("assets/images/civilians/civilian_2.png"));
+        this.civilianImages.push(loadImage("assets/images/civilians/civilian_3.png"));
 
         this.bossPlaatje = loadImage('assets/images/MPLA_tank.png');
 
@@ -74,6 +79,8 @@ class Spel {
         this.menuSong.stop();
 
         this.enemies.length = 0;
+        this.civilians.length = 0;
+
         this.inBossFight = false;
         switch (level) {
             case 1:
@@ -83,6 +90,7 @@ class Spel {
                 this.doel = 250;
                 this.tijdOver = 45;
                 this.spawnVijanden = true;
+                this.spawnCivialians = false;
                 this.scopePlaatje = this.normaleScope;
                 break;
             case 2:
@@ -92,6 +100,7 @@ class Spel {
                 this.doel = 350;
                 this.tijdOver = 55;
                 this.spawnVijanden = true;
+                this.spawnCivialians = true;
                 this.scopePlaatje = this.normaleScope;
                 break;
             case 3:
@@ -101,6 +110,7 @@ class Spel {
                 this.doel = 600;
                 this.tijdOver = 70;
                 this.spawnVijanden = true;
+                this.spawnCivialians = false;
                 this.scopePlaatje = this.normaleScope;
                 break;
             case 4:
@@ -111,6 +121,7 @@ class Spel {
                 this.scopePlaatje = this.elandScope;
                 this.boss = new Boss(this.bossPlaatje);
                 this.inBossFight = true;
+                this.spawnCivialians = false;
                 break;
             default:
                 this.wapen = this.fnMAG;
