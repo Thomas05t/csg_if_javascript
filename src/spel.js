@@ -288,14 +288,15 @@ class Spel {
         } else {
             if (this.gameOver) {
                 if (keyIsDown(32)) {
-                    this.startLevel(1);
+                    this.startLevel(this.level);
                 }
             } else {
                 if (keyIsDown(32)) {
                     if (this.level == 1)
                     {
                         this.civilianWaarschuwing();
-                    } else
+                    } 
+                    else
                     {
                         this.startLevel(this.level + 1);
                     }
@@ -462,12 +463,13 @@ class Spel {
         else {
             cursor(ARROW);
 
-            fill(0);
+            
             textAlign(CENTER, CENTER);
             textFont('monospace');
             textSize(84);
 
             if (this.gameOver) {
+                fill(0);
                 image(this.gameoverScreen, 0, 0, width, height);
                 textStyle(NORMAL);
                 textSize(32);
@@ -478,12 +480,13 @@ class Spel {
                     text("MPLA Levens: " + this.boss.levens, width / 2, 32);
                 }
             } else {
+                fill(255);
                 image(this.victoryScreen, 0, 0, width, height);
                 textStyle(BOLD);
                 text("LEVEL " + this.level + "  GEHAALD!", width / 2, height / 2 - 100);
                 textStyle(NORMAL);
                 textSize(32);
-                text("Tijd over: " + this.tijdOver.toFixed(2) + "s over!", width / 2, height / 2 + 50);
+                text("Tijd over: " + this.tijdOver.toFixed(2) + "s", width / 2, height / 2 + 50);
             }
         }
     }
