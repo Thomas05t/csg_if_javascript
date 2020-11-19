@@ -31,7 +31,7 @@ class Spel {
         // De verschillende wapens
         this.vectorR4 = new Wapen("Vector R4", 30, 2.5, 3.0, loadImage("assets/images/r4.png"), 6, loadSound('assets/sounds/R4_shot.mp3'), loadSound('assets/sounds/R4_reload.mp3'));
         this.fnFAL = new Wapen("FN FAL", 20, 1.5, 5.0, loadImage("assets/images/FAL-rifle.png"), 6, loadSound('assets/sounds/FAL_shot.mp3'), loadSound('assets/sounds/FAL_reload.mp3'));
-        this.fnMAG = new Wapen("FN MAG", 60, 6.0, 1.8, loadImage("assets/images/MAG-gun.png"), 1, loadSound('assets/sounds/MAG_shot.mp3'), loadSound('assets/sounds/MAG_reload.mp3'));
+        this.fnMAG = new Wapen("FN MAG", 100, 6.0, 1.8, loadImage("assets/images/MAG-gun.png"), 1, loadSound('assets/sounds/MAG_shot.mp3'), loadSound('assets/sounds/MAG_reload.mp3'));
         this.eland = new Wapen("Eland", 200, 10.0, 1.0, loadImage("assets/images/Eland.png"), 2, loadSound('assets/sounds/Eland_firing_sound.mp3'), loadSound('assets/sounds/Eland_Reload.mp3'));
 
         this.enemyImages.push(loadImage("assets/images/enemies/enemy1.png"));
@@ -288,14 +288,15 @@ class Spel {
         } else {
             if (this.gameOver) {
                 if (keyIsDown(32)) {
-                    this.startLevel(1);
+                    this.startLevel(this.level);
                 }
             } else {
                 if (keyIsDown(32)) {
                     if (this.level == 1)
                     {
                         this.civilianWaarschuwing();
-                    } else
+                    } 
+                    else
                     {
                         this.startLevel(this.level + 1);
                     }
@@ -462,12 +463,13 @@ class Spel {
         else {
             cursor(ARROW);
 
-            fill(0);
+            
             textAlign(CENTER, CENTER);
             textFont('monospace');
             textSize(84);
 
             if (this.gameOver) {
+                fill(0);
                 image(this.gameoverScreen, 0, 0, width, height);
                 textStyle(NORMAL);
                 textSize(32);
@@ -478,12 +480,13 @@ class Spel {
                     text("MPLA Levens: " + this.boss.levens, width / 2, 32);
                 }
             } else {
+                fill(255);
                 image(this.victoryScreen, 0, 0, width, height);
                 textStyle(BOLD);
                 text("LEVEL " + this.level + "  GEHAALD!", width / 2, height / 2 - 100);
                 textStyle(NORMAL);
                 textSize(32);
-                text("Tijd over: " + this.tijdOver.toFixed(2) + "s over!", width / 2, height / 2 + 50);
+                text("Tijd over: " + this.tijdOver.toFixed(2) + "s", width / 2, height / 2 + 50);
             }
         }
     }

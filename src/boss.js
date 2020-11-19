@@ -2,8 +2,8 @@ class Boss {
     constructor(plaatje) {
         this.sprite = plaatje;
         this.levens = 300;
-        this.width = plaatje.width / 4;
-        this.height = plaatje.height / 4;
+        this.width = plaatje.width / 2;
+        this.height = plaatje.height / 2;
         this.x = 100 - this.width / 2;
         this.y = height / 2  - this.height / 2;
         this.isVerslagen = false;
